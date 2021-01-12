@@ -75,11 +75,12 @@ def yaml_to_erddap(record: Dict):
             organizations = list(set(organizations+[organization]))
 
     instruments = []
-
-    if record['platform']['instruments']:
-        for instrument in record['platform']['instruments']:
-            if instrument['id']:
-                instruments = list(set(instruments + [str(instrument['id'])]))
+    if record.get("platform"):
+        if record['platform']['instruments']:
+            for instrument in record['platform']['instruments']:
+                if instrument['id']:
+                    instruments = list(
+                        set(instruments + [str(instrument['id'])]))
 
     bbox = record['spatial'].get('bbox')
 
@@ -145,13 +146,13 @@ def yaml_to_erddap(record: Dict):
         #    "instrument_vocabulary": "",
         "keywords": ','.join(list(set(
             record['identification']['keywords']['default'][language] +
-            record['identification']['keywords']['eov']))),
+            record['identification']['keywords']['eov'][language]))),
         #    "keywords_vocabulary": "",
         "license": record.get('use_constraints',
                               {}).get('licence', {}).get('title'),
         #    "metadata_link": "",
         #    "naming_authority": "",
-        "platform": record['platform']['name'],
+        "platform": record.get('platform', {}).get('name'),
         #    "platform_vocabulary": "",
         #    "processing_level": "",
         #    "product_version": "",
