@@ -104,7 +104,7 @@ def yaml_to_erddap(record: Dict):
 
         contributor_name = contact.get("individual", {}).get("name")
         if contributor_name:
-            contributor_names.append()
+            contributor_names.append(contributor_name)
 
         # just getting the first role
         contributor_roles.append(contact["roles"][0])
