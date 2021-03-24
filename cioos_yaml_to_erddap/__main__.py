@@ -111,8 +111,7 @@ def yaml_to_erddap(record: Dict):
 
         break
     title = get_in_language(record["identification"]["title"], language)
-    print("contributor_names")
-    print(contributor_names)
+
     erddap_globals = {
         #    "infoUrl": "",  # from erddap
         #    "sourceUrl": "",  # from erddap
