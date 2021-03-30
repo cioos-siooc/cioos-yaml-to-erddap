@@ -127,7 +127,7 @@ def yaml_to_erddap(record: Dict):
         "creator_name": contributor.get("name"),
         "creator_type": contributor.get("type"),
         "creator_url": contributor.get("url"),
-        "date_created": record["identification"]["dates"].get("creation"),
+        "date_created": record["identification"].get("dates", {}).get("creation"),
         #    "date_issued": "",
         #    "date_metadata_modified": "",
         #    "date_modified": "",
