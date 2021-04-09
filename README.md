@@ -1,5 +1,7 @@
 # CIOOS YAML to ERDDAP
 
+[![Python CI](https://github.com/cioos-siooc/cioos-yaml-to-erddap/actions/workflows/test.yaml/badge.svg)](https://github.com/cioos-siooc/cioos-yaml-to-erddap/actions)
+
 Converts a yaml metadata record to a xml snippet that can be pasted into a datasets.xml file. Outputs to stdout
 
 ## Installation
@@ -8,7 +10,7 @@ Converts a yaml metadata record to a xml snippet that can be pasted into a datas
 
 ## Running
 
-`python -m cioos_yaml_to_erddap <filename>`
+`python -m cioos_yaml_to_erddap -f sample_record.yaml`
 
 Example result:
 
