@@ -8,6 +8,7 @@ Main function of this module, creates ACDD key/value from the appropriate values
 
 from typing import Dict
 
+from .licenses import license_urls
 from .utils import get_in_language, get_xml_filename
 
 
@@ -15,6 +16,11 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     "Builds a dictionary of ACDD key/value pairs"
 
     language = record["metadata"]["language"]
+
+    language_alt = "fr"
+
+    if language == "fr":
+        language_alt = "en"
 
     if not language:
         raise Exception("'language' cannot be empty")
@@ -75,8 +81,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         # just getting the first role
         contributor_roles.append(contact["roles"][0])
 
-    title = get_in_language(record["identification"]["title"], language)
-
     erddap_globals = {
         #    "infoUrl": "",  # from erddap
         #    "sourceUrl": "",  # from erddap
@@ -110,6 +114,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "geospatial_vertical_units": "",
         #    "history": "",
         #    "id": ""
+        # Note infoUrl is an ERDDAP thing, not in ACDD, see
+        # https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html#infoUrl
+        "infoUrl": record["distribution"][0].get("url"),
         "institution": ",".join(organizations or []),
         "instrument": ",".join(instruments or []),
         #    "instrument_vocabulary": "",
@@ -121,8 +128,23 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
                 )
             )
         ),
+        f"keywords_{language_alt}": ",".join(
+            list(
+                set(
+                    record["identification"]["keywords"]["default"].get(
+                        language_alt, []
+                    )
+                    + record["identification"]["keywords"]["eov"].get(language_alt, [])
+                )
+            )
+        ),
         #    "keywords_vocabulary": "",
-        "license": record.get("use_constraints", {}).get("licence", {}).get("title"),
+        "license": license_urls.get(
+            record["metadata"].get("use_constraints", {}).get("licence", {}).get("code")
+        ),
+        "limitations": get_in_language(
+            record["metadata"].get("use_constraints", {}).get("limitations"), language
+        ),
         #    "metadata_link": "",
         #    "naming_authority": "",
         "platform": record.get("platform", {}).get("name"),
@@ -142,11 +164,17 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "source": "",
         #    "standard_name_vocabulary": "",
         "summary": get_in_language(record["identification"]["abstract"], language),
+        f"summary_{language_alt}": get_in_language(
+            record["identification"]["abstract"], language_alt
+        ),
         #    "time_coverage_duration": "",
         #    "time_coverage_end": "",
         #    "time_coverage_resolution": "",
         #    "time_coverage_start": "",
-        "title": title,
+        "title": get_in_language(record["identification"]["title"], language),
+        f"title_{language_alt}": get_in_language(
+            record["identification"]["title"], language_alt
+        ),
         #    "Metadata_Convention": ""
     }
     return erddap_globals
