@@ -25,6 +25,18 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     if not language:
         raise Exception("'language' cannot be empty")
 
+    # Define Info URL and id
+    infoUrl = None
+    if record['identification'].get("identifier"):
+        infoUrl = 'https://www.doi.org/' + record['identification']["identifier"]
+        id = record['identification']["identifier"]
+        naming_authority = "org.doi"
+    else:
+        # Link to National CIOOS, don't think we can link to the upstream CKAN
+        infoUrl = "https://catalogue.cioos.ca/en/dataset/ca-cioos_" + record['metadata']["identifier"]
+        id = record['metadata']["identifier"]
+        naming_authority = record["metadata"]["naming_autority"]
+
     # Get all organizations
     organizations = []
 
@@ -82,12 +94,17 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         contributor_roles.append(contact["roles"][0])
 
     erddap_globals = {
-        #    "infoUrl": "",  # from erddap
+        "infoUrl": infoUrl,
         #    "sourceUrl": "",  # from erddap
         #    "Conventions": "",
         #    "acknowledgement": "",
         #    "cdm_data_type": "",
-        "comment": get_in_language(record["metadata"].get("comment"), language),
+        "comment":get_in_language(
+            record["metadata"]["comment"], language
+        ),
+        f"comment_{language_alt}": get_in_language(
+            record["metadata"]["comment"], language_alt
+        ),
         "contributor_name": ",".join(contributor_names or []),
         "contributor_role": ",".join(contributor_roles or []),
         #    "coverage_content_type": "",
@@ -97,9 +114,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "creator_type": creator_type,
         "creator_url": creator.get("url"),
         "date_created": record["identification"].get("dates", {}).get("creation"),
-        #    "date_issued": "",
-        #    "date_metadata_modified": "",
-        #    "date_modified": "",
+        "date_issued": record["metadata"].get("publication"),
+        #   "date_metadata_modified": "",
+        "date_modified": record["metadata"].get("revision"),
         "geospatial_bounds": record["spatial"]["polygon"] if not bbox else None,
         #    "geospatial_bounds_crs": "",
         #    "geospatial_bounds_vertical_crs": "",
@@ -112,19 +129,17 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "geospatial_vertical_positive": "",
         #    "geospatial_vertical_resolution": "",
         #    "geospatial_vertical_units": "",
-        #    "history": "",
-        #    "id": ""
-        # Note infoUrl is an ERDDAP thing, not in ACDD, see
-        # https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html#infoUrl
-        "infoUrl": record["distribution"][0].get("url"),
+        "history": record['metadata'].get("history"),
+        "id": id,
+        "naming_authority": naming_authority,
         "institution": ",".join(organizations or []),
         "instrument": ",".join(instruments or []),
         #    "instrument_vocabulary": "",
         "keywords": ",".join(
             list(
                 set(
-                    record["identification"]["keywords"]["default"][language]
-                    + record["identification"]["keywords"]["eov"][language]
+                    record["identification"]["keywords"]["default"]["en"]
+                    + record["identification"]["keywords"]["eov"]["en"]
                 )
             )
         ),
@@ -145,8 +160,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "limitations": get_in_language(
             record["metadata"].get("use_constraints", {}).get("limitations"), language
         ),
+        "keywords_vocabulary": "GOOS/CIOOS EOVS",
+        "doi": record['identification'].get("identifier"),
         #    "metadata_link": "",
-        #    "naming_authority": "",
         "platform": record.get("platform", {}).get("name"),
         #    "platform_vocabulary": "",
         #    "processing_level": "",
