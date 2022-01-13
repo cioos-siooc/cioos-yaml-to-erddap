@@ -100,10 +100,10 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "acknowledgement": "",
         #    "cdm_data_type": "",
         "comment":get_in_language(
-            record["metadata"]["comment"], language
+            record["metadata"].get("comment"), language
         ),
         f"comment_{language_alt}": get_in_language(
-            record["metadata"]["comment"], language_alt
+            record["metadata"].get("comment"), language_alt
         ),
         "contributor_name": ",".join(contributor_names or []),
         "contributor_role": ",".join(contributor_roles or []),
