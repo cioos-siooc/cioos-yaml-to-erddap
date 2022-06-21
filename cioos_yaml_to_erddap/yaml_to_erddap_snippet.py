@@ -30,7 +30,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     # Get all instruments
     instruments = []
     if record.get("platform"):
-        if record["platform"]["instruments"]:
+        if record["platform"].get("instruments"):
             for instrument in record["platform"]["instruments"]:
                 if instrument["id"]:
                     instruments = list(set(instruments + [str(instrument["id"])]))
@@ -76,6 +76,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         contributor_roles.append(contact["roles"][0])
 
     title = get_in_language(record["identification"]["title"], language)
+    
+    platform_l06 = record.get("platform",{}).get("type")
 
     erddap_globals = {
         #    "infoUrl": "",  # from erddap
@@ -125,7 +127,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "license": record.get("use_constraints", {}).get("licence", {}).get("title"),
         #    "metadata_link": "",
         #    "naming_authority": "",
-        "platform": record.get("platform", {}).get("name"),
+        "platform": platform_l06,
+        "platform_vocabulary": platform_l06 and "http://vocab.nerc.ac.uk/collection/L06/current/",
         #    "platform_vocabulary": "",
         #    "processing_level": "",
         #    "product_version": "",

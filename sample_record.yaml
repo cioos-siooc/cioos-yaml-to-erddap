@@ -121,6 +121,12 @@ distribution:
       fr:
         "Les dossiers d'occurrence sont hébergés dans le dépôt du Système d'information
         sur la biodiversité océanique (BIS). "
+platform:
+  type: drifting subsurface profiling float
+  name: platform_name
+  authority: platform_authority
+  id: platform id
+  description: platform_description
 instruments:
   - description:
       en:
