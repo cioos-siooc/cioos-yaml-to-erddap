@@ -76,8 +76,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         contributor_roles.append(contact["roles"][0])
 
     title = get_in_language(record["identification"]["title"], language)
-    
-    platform_l06 = record.get("platform",{}).get("type")
+
+    platform_l06 = record.get("platform", {}).get("type")
 
     erddap_globals = {
         #    "infoUrl": "",  # from erddap
@@ -128,7 +128,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "metadata_link": "",
         #    "naming_authority": "",
         "platform": platform_l06,
-        "platform_vocabulary": platform_l06 and "http://vocab.nerc.ac.uk/collection/L06/current/",
+        "platform_vocabulary": platform_l06
+        and "http://vocab.nerc.ac.uk/collection/L06/current/",
         #    "platform_vocabulary": "",
         #    "processing_level": "",
         #    "product_version": "",
