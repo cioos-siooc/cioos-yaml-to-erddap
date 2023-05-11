@@ -34,8 +34,11 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         naming_authority = "org.doi"
     else:
         # Link to National CIOOS, don't think we can link to the upstream CKAN
-        infoUrl = "https://catalogue.cioos.ca/en/dataset/ca-cioos_" + record['metadata']["identifier"]
-        id = record['metadata']["identifier"]
+        infoUrl = (
+            "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
+            + record["metadata"]["identifier"]
+        )
+        id = record["metadata"]["identifier"]
         naming_authority = record["metadata"]["naming_autority"]
 
     # Get all organizations
@@ -100,9 +103,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "Conventions": "",
         #    "acknowledgement": "",
         #    "cdm_data_type": "",
-        "comment":get_in_language(
-            record["metadata"].get("comment"), language
-        ),
+        "comment": get_in_language(record["metadata"].get("comment"), language),
         f"comment_{language_alt}": get_in_language(
             record["metadata"].get("comment"), language_alt
         ),
@@ -130,7 +131,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "geospatial_vertical_positive": "",
         #    "geospatial_vertical_resolution": "",
         #    "geospatial_vertical_units": "",
-        "history": record['metadata'].get("history"),
+        "history": record["metadata"].get("history"),
         "id": id,
         "naming_authority": naming_authority,
         "institution": ",".join(organizations or []),
@@ -162,7 +163,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
             record["metadata"].get("use_constraints", {}).get("limitations"), language
         ),
         "keywords_vocabulary": "GOOS/CIOOS EOVS",
-        "doi": record['identification'].get("identifier"),
+        "doi": record["identification"].get("identifier"),
         #    "metadata_link": "",
         "platform": record.get("platform", {}).get("name"),
         #    "platform_vocabulary": "",
