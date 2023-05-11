@@ -27,9 +27,10 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
 
     # Define Info URL and id
     infoUrl = None
-    if record['identification'].get("identifier"):
-        infoUrl = 'https://www.doi.org/' + record['identification']["identifier"]
-        id = record['identification']["identifier"]
+    if record["identification"].get("identifier"):
+        doi = record["identification"]["identifier"]
+        infoUrl = f"https://www.doi.org/{doi}" if "doi.org" not in doi else doi
+        id = record["identification"]["identifier"]
         naming_authority = "org.doi"
     else:
         # Link to National CIOOS, don't think we can link to the upstream CKAN
