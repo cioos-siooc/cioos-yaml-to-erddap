@@ -31,7 +31,7 @@ identification:
   title:
     en: Hakai Institute Juvenile Salmon Program
     fr: Programme du saumon juvénile de l'Institut Hakai
-  identifier: 76e20e5d-0bbc-4a0f-90c7-598a3edd4258
+  identifier: 10.21966/C7NA-Z171
   abstract:
     en:
       The Hakai Institute Juvenile Salmon Program has been monitoring juvenile salmon
@@ -121,6 +121,12 @@ distribution:
       fr:
         "Les dossiers d'occurrence sont hébergés dans le dépôt du Système d'information
         sur la biodiversité océanique (BIS). "
+platform:
+  type: drifting subsurface profiling float
+  name: platform_name
+  authority: platform_authority
+  id: platform id
+  description: platform_description
 instruments:
   - description:
       en:
