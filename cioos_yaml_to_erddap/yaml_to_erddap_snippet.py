@@ -81,6 +81,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         # just getting the first role
         contributor_roles.append(contact["roles"][0])
 
+    platform_l06 = record.get("platform", {}).get("type")
+
     erddap_globals = {
         #    "infoUrl": "",  # from erddap
         #    "sourceUrl": "",  # from erddap
