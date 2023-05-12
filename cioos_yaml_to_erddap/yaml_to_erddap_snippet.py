@@ -111,28 +111,52 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     bbox = record["spatial"]["bbox"]
 
     erddap_globals = {
+        #    "sourceUrl": "",  # from erddap
+        #    "cdm_data_type": "",
+        "institution": institution,
+        "title": get_in_language(record["identification"]["title"], language),
+        f"title_{language_alt}": get_in_language(
+            record["identification"]["title"], language_alt
+        ),
+        "product_version": record["identification"].get("edition"),
+        #    "program": "",
+        "project": record["identification"].get("project")
+        and ",".join(record["identification"].get("project")),
+        "date_created": record["identification"].get("dates", {}).get("creation"),
+        "date_issued": record["metadata"].get("publication"),
+        #   "date_metadata_modified": "",
+        "date_modified": record["metadata"].get("revision"),
+        "summary": get_in_language(record["identification"]["abstract"], language),
+        f"summary_{language_alt}": get_in_language(
+            record["identification"]["abstract"], language_alt
+        ),
+        **creator,
+        **publisher,
+        **contributors,
+        "comment": get_in_language(record["metadata"].get("comment"), language),
+        f"comment_{language_alt}": get_in_language(
+            record["metadata"].get("comment"), language_alt
+        ),
+        "history": record["metadata"].get("history"),
+        #    "acknowledgement": "",
+        "license": license_urls.get(
+            record["metadata"].get("use_constraints", {}).get("licence", {}).get("code")
+        ),
+        "limitations": get_in_language(
+            record["metadata"].get("use_constraints", {}).get("limitations"), language
+        ),
+        f"limitations{language_alt}": get_in_language(
+            record["metadata"].get("use_constraints", {}).get("limitations"),
+            language_alt,
+        ),
         "infoUrl": metadata_link,
         "metadata_link": metadata_link,
         "references": doi_url or metadata_link,
         "doi": record["identification"].get("identifier"),
         "id": doi or record["metadata"]["identifier"],
         "naming_authority": "org.doi" if doi else record["metadata"]["naming_autority"],
-        **creator,
-        **publisher,
-        **contributors,
-        #    "sourceUrl": "",  # from erddap
         "Conventions": "ACDD-1.3,CF-1.6",
-        #    "acknowledgement": "",
-        #    "cdm_data_type": "",
-        "comment": get_in_language(record["metadata"].get("comment"), language),
-        f"comment_{language_alt}": get_in_language(
-            record["metadata"].get("comment"), language_alt
-        ),
         #    "coverage_content_type": "",
-        "date_created": record["identification"].get("dates", {}).get("creation"),
-        "date_issued": record["metadata"].get("publication"),
-        #   "date_metadata_modified": "",
-        "date_modified": record["metadata"].get("revision"),
         "geospatial_bounds": record["spatial"]["polygon"] if not bbox else None,
         #    "geospatial_bounds_crs": "",
         #    "geospatial_bounds_vertical_crs": "",
@@ -145,10 +169,11 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "geospatial_vertical_positive": "",
         #    "geospatial_vertical_resolution": "",
         #    "geospatial_vertical_units": "",
-        "history": record["metadata"].get("history"),
-        "institution": institution,
         "instrument": ",".join(instruments or []),
         #    "instrument_vocabulary": "",
+        "platform": platform_l06,
+        "platform_vocabulary": platform_l06
+        and "http://vocab.nerc.ac.uk/collection/L06/current/",
         "keywords": ",".join(
             list(
                 set(
@@ -168,39 +193,14 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
             )
         ),
         "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
-        "license": license_urls.get(
-            record["metadata"].get("use_constraints", {}).get("licence", {}).get("code")
-        ),
-        "limitations": get_in_language(
-            record["metadata"].get("use_constraints", {}).get("limitations"), language
-        ),
-        f"limitations{language_alt}": get_in_language(
-            record["metadata"].get("use_constraints", {}).get("limitations"),
-            language_alt,
-        ),
-        "platform": platform_l06,
-        "platform_vocabulary": platform_l06
-        and "http://vocab.nerc.ac.uk/collection/L06/current/",
         #    "processing_level": "",
-        "product_version": record["identification"].get("edition"),
-        #    "program": "",
-        "project": record["identification"].get("project")
-        and ",".join(record["identification"].get("project")),
         #    "references": "",
         #    "source": "",
         #    "standard_name_vocabulary": "",
-        "summary": get_in_language(record["identification"]["abstract"], language),
-        f"summary_{language_alt}": get_in_language(
-            record["identification"]["abstract"], language_alt
-        ),
         #    "time_coverage_duration": "",
         #    "time_coverage_end": "",
         #    "time_coverage_resolution": "",
         #    "time_coverage_start": "",
-        "title": get_in_language(record["identification"]["title"], language),
-        f"title_{language_alt}": get_in_language(
-            record["identification"]["title"], language_alt
-        ),
     }
     return erddap_globals
 
