@@ -112,7 +112,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
 
     erddap_globals = {
         #    "sourceUrl": "",  # from erddap
-        #    "cdm_data_type": "",
         "institution": institution,
         "title": get_in_language(record["identification"]["title"], language),
         f"title_{language_alt}": get_in_language(
@@ -120,6 +119,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         ),
         "product_version": record["identification"].get("edition"),
         #    "program": "",
+        #    "processing_level": "",
+        #    "source": "",
         "project": record["identification"].get("project")
         and ",".join(record["identification"].get("project")),
         "date_created": record["identification"].get("dates", {}).get("creation"),
@@ -156,7 +157,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "id": doi or record["metadata"]["identifier"],
         "naming_authority": "org.doi" if doi else record["metadata"]["naming_autority"],
         "Conventions": "ACDD-1.3,CF-1.6",
-        #    "coverage_content_type": "",
         "geospatial_bounds": record["spatial"]["polygon"] if not bbox else None,
         #    "geospatial_bounds_crs": "",
         #    "geospatial_bounds_vertical_crs": "",
@@ -193,9 +193,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
             )
         ),
         "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
-        #    "processing_level": "",
-        #    "references": "",
-        #    "source": "",
         #    "standard_name_vocabulary": "",
         #    "time_coverage_duration": "",
         #    "time_coverage_end": "",
