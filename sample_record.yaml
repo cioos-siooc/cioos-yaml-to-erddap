@@ -1,142 +1,95 @@
-metadata:
-  naming_authority: ca.coos
-  identifier: 50f11bf2-c710-446c-8230-9ebbf6dcb2a3
-  language: en
-  maintenance_note: Generated from https://cioos-siooc.github.io/metadata-entry-form
-  use_constraints:
-    limitations:
-      en:
-        The data in this format should not be used to calculate the relative abundance
-        of fish caught.
-      fr:
-        Les données présentées dans ce format ne devraient pas servir à calculer
-        l'abondance relative des poissons capturés.
-    licence:
-      title: Creative Commons Attribution 4.0
-      code: CC-BY-4.0
-      url: https://creativecommons.org/licenses/by/4.0
-  dates:
-    revision: "2021-03-24T00:01:25.183Z"
-    publication: "2021-03-24"
-spatial:
-  bbox:
-    - -126.815
-    - 50.17877
-    - -124.978
-    - 50.60525
-  vertical:
-    - 0.0
-    - 9.0
+contact:
+  - inCitation: true
+    organization:
+      address: 123 CIOOS street
+      city: Vancouver
+      country: Canada
+      email: data@hakai.org
+      name: CIOOS
+      ror: https://ror.org/00000000
+      url: https://www.cioos.ca/
+    roles:
+      - owner
+      - distributor
+  - inCitation: false
+    individual:
+      email: asda@asd.org
+      name: my name
+      orcid: https://orcid.org/0000-0000-0000-0000
+    organization:
+      address: 123 CIOOS street
+      city: Halifax
+      country: Canada
+      email: data@hakai.org
+      name: 123 CIOOS street
+      ror: https://ror.org/00000000
+      url: https://www.cioos.ca/
+    roles:
+      - custodian
+distribution:
+  - name:
+      en: ERDDAP Dataset
+      fr: Ensemble de données ERDDAP
+    url: address.org/erddap/tableDap/somedataset
 identification:
-  title:
-    en: Hakai Institute Juvenile Salmon Program
-    fr: Programme du saumon juvénile de l'Institut Hakai
-  identifier: 10.21966/C7NA-Z171
   abstract:
-    en:
-      The Hakai Institute Juvenile Salmon Program has been monitoring juvenile salmon
-      migrations in the Discovery Islands and Johnstone Strait in British Columbia
-      Canada, since 2015 to understand how ocean conditions experienced by juvenile
-      salmon during their early marine migration impacts their growth, health and
-      ultimately survival.
-    fr:
-      Le Hakai Institute Juvénile Salmon Program surveille les migrations de saumons
-      juvéniles dans les îles Discovery et le détroit de Johnstone en Colombie-Britannique,
-      au Canada, depuis 2015 afin de comprendre comment les conditions océaniques
-      vécues par les saumons juvéniles durant leur migration marine précoce influent
-      sur leur croissance, leur santé et finalement, la survie.
+    en: a little summary
+    fr: un petit résumé
   dates:
-    creation: "2015-05-12"
-    revision: "2021-01-30"
+    creation: '2023-05-01'
+    publication: '2023-05-15'
+    revision: '2023-05-31'
+  edition: 1.1.1
+  identifier: 10.0000/0000
   keywords:
     default:
       en:
-        - salmon, survival, fish health, marine ecology, sockeye, pink, chum, coho
+        - atmospheric pressure
+        - citizen data
+      fr:
+        - pression atmosphérique
+        - saisie citoyenne
     eov:
       en:
-        - other
+        - dissolvedOrganicCarbon
+        - nitrousOxide
+        - particulateMatter
       fr:
-        - Autre
-  temporal_begin: "2015-05-12T19:00:00.000Z"
-  status: published
-  progress_code: onGoing
-contact:
-  - roles:
-      - custodian
-      - resourceProvider
-      - owner
-      - pointOfContact
-      - processor
-      - author
-      - publisher
-      - distributor
-    organization:
-      name: Hakai Institute
-    individual:
-      name: Brett Johnson
-      email: brett.johnson@hakai.org
-  - roles:
-      - owner
-      - principalInvestigator
-      - author
-      - pointOfContact
-      - distributor
-    organization:
-      name: University of British Columbia
-      address: AERL, 2202 Main Mall
-      city: Vancouver
-      country: Canada
-    individual:
-      name: Brian Hunt
-      position: Principal Investigator
-      email: b.hunt@oceans.ubc.ca
-  - roles:
-      - owner
-      - pointOfContact
-      - distributor
-    organization:
-      name: Hakai Institute
-    individual:
-      name: Tim van der Stap
-      email: tim.vanderstap@hakai.org
-  - roles:
-      - author
-    individual:
-      name: Julian Gan
-  - roles:
-      - author
-    individual:
-      name: Sean Godwin
-  - roles:
-      - author
-    individual:
-      name: Martin Krkosek
-distribution:
-  - url: https://obis.org/dataset/76e20e5d-0bbc-4a0f-90c7-598a3edd4258
-    name: Hakai Institute Juvenile Salmon Program
-    description:
-      en:
-        "Occurrence records as hosted on the Ocean Biodiversity Information System
-        (OBIS) repository. "
-      fr:
-        "Les dossiers d'occurrence sont hébergés dans le dépôt du Système d'information
-        sur la biodiversité océanique (BIS). "
+        - Carbone organique dissous
+        - Protoxyde d'azote
+        - Matière particulaire
+  progress_code: historicalArchive
+  status: submitted
+  temporal_begin: '2023-05-01T16:00:00.000Z'
+  temporal_end: '2023-05-31T16:00:00.000Z'
+  title:
+    en: test record
+    fr: record de test
+metadata:
+  dates:
+    revision: '2023-05-12T15:07:30.591Z'
+  identifier: 82e64fa8-8312-4a74-ad09-2b94abae1220
+  language: en
+  maintenance_note: Generated from https://cioos-siooc.github.io/metadata-entry-form
+  naming_authority: ca.cioos
+  use_constraints:
+    licence:
+      code: CC-BY-4.0
+      title:
+        en: Creative Commons Attribution 4.0 Attribution
+      url: https://creativecommons.org/licenses/by/4.0
+    limitations:
+      en: limitations a
+      fr: limites a
 platform:
-  type: drifting subsurface profiling float
-  name: platform_name
-  authority: platform_authority
-  id: platform id
-  description: platform_description
-instruments:
-  - description:
-      en:
-        "Purse seine net with bunt dimensions: 27m x 9m, mesh size 13 millimeters.
-        Tow dimensions: 46m x 9m with mesh size 76 millimeters. "
-      fr:
-        "Filet à senne coulissante avec dimensions : 27m x 9m, maille 13 millimètres.
-        Dimensions de la remorque : 46m x 9m avec maille 76 millimètres. "
-    id: http://vocab.nerc.ac.uk/collection/L05/current/23/
-    manufacturer: Redden Nets
-    type:
-      en: Purse seine net
-      fr: Filet à senne coulissante
+  id: multiple platform ID
+  type: ship
+spatial:
+  bbox:
+    - -138.8
+    - 47.62
+    - -119.9
+    - 55.28
+  vertical:
+    - 15.0
+    - 150.0
