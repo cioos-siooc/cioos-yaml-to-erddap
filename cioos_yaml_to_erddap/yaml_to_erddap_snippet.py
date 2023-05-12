@@ -42,7 +42,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     doi_url = doi if not doi or "doi.org" in doi else f"http://doi.org/{doi}"
     metadata_link = (
         "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
-        + record["metadata"]["identifier"],
+        + record["metadata"]["identifier"]
     )
 
     # Contacts
@@ -153,9 +153,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "infoUrl": metadata_link,
         "metadata_link": metadata_link,
         "references": doi_url or metadata_link,
-        "doi": record["identification"].get("identifier"),
-        "id": doi or record["metadata"]["identifier"],
-        "naming_authority": "org.doi" if doi else record["metadata"]["naming_autority"],
+        "doi": doi,
+        "id": record["metadata"]["identifier"],
+        "naming_authority": "ca.cioos",
         "Conventions": "ACDD-1.3,CF-1.6",
         "geospatial_bounds": record["spatial"]["polygon"] if not bbox else None,
         #    "geospatial_bounds_crs": "",
