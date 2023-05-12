@@ -157,7 +157,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
                 )
             )
         ),
-        #    "keywords_vocabulary": "",
+        "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
         "license": license_urls.get(
             record["metadata"].get("use_constraints", {}).get("licence", {}).get("code")
         ),
@@ -168,9 +168,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
             record["metadata"].get("use_constraints", {}).get("limitations"),
             language_alt,
         ),
-        "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
         "doi": record["identification"].get("identifier"),
-        #    "metadata_link": "",
+        "metadata_link": "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
+        + record["metadata"]["identifier"],
         "platform": platform_l06,
         "platform_vocabulary": platform_l06
         and "http://vocab.nerc.ac.uk/collection/L06/current/",
