@@ -164,6 +164,10 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "limitations": get_in_language(
             record["metadata"].get("use_constraints", {}).get("limitations"), language
         ),
+        f"limitations{language_alt}": get_in_language(
+            record["metadata"].get("use_constraints", {}).get("limitations"),
+            language_alt,
+        ),
         "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
         "doi": record["identification"].get("identifier"),
         #    "metadata_link": "",
