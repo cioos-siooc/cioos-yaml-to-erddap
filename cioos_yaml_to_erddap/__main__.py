@@ -13,7 +13,15 @@ import argparse
 
 import yaml
 
-from .yaml_to_erddap_snippet import create_xml_snippet
+from cioos_yaml_to_erddap.yaml_to_erddap_snippet import create_xml_snippet
+
+
+def cioos_yaml_to_erddap(filename):
+    """cioos_yaml_to_erddap convert CIOOS YAML format to an ERDDAP compliant xml"""
+    # write xml snippet
+    with open(filename, encoding="utf-8") as stream:
+        record = yaml.safe_load(stream)
+    return create_xml_snippet(record)
 
 
 def main():
@@ -32,12 +40,8 @@ def main():
 
     args = parser.parse_args()
     filename = args.yaml_file
-
-    # write xml snippet
-    with open(filename) as stream:
-        record = yaml.safe_load(stream)
-        xml = create_xml_snippet(record)
-        print(xml)
+    xml = cioos_yaml_to_erddap(filename)
+    print(xml)
 
 
 if __name__ == "__main__":
