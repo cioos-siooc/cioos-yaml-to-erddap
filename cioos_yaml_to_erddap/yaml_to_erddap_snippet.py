@@ -200,7 +200,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         f"title_{language_alt}": get_in_language(
             record["identification"]["title"], language_alt
         ),
-        #    "Metadata_Convention": ""
     }
     return erddap_globals
 
