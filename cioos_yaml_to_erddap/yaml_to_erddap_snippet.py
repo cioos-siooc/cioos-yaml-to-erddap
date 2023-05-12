@@ -15,39 +15,89 @@ from cioos_yaml_to_erddap.utils import get_in_language, get_xml_filename
 def yaml_to_erddap_dict(record: Dict) -> Dict:
     "Builds a dictionary of ACDD key/value pairs"
 
+    def _get_contact(contact, info):
+        """Priotorize individual contacts over organization"""
+        return contact.get("individual", {}).get(info) or contact.get(
+            "organization", {}
+        ).get(info)
+
+    def _get_contributors_name(contact):
+        if "individual" in contact and "organization" in contact:
+            return (
+                f"{contact['individual']['name']} [{contact['organization']['name']}]"
+            )
+
+        return contact.get("individual", {}).get("name") or contact.get(
+            "organization", {}
+        ).get("name")
+
+    # Sort language
     language = record["metadata"]["language"]
-
-    language_alt = "fr"
-
-    if language == "fr":
-        language_alt = "en"
-
+    language_alt = "fr" if language == "fr" else "en"
     if not language:
         raise Exception("'language' cannot be empty")
 
-    # Define Info URL and id
-    infoUrl = None
-    if record["identification"].get("identifier"):
-        doi = record["identification"]["identifier"]
-        infoUrl = f"https://www.doi.org/{doi}" if "doi.org" not in doi else doi
-        id = record["identification"]["identifier"]
-        naming_authority = "org.doi"
-    else:
-        # Link to National CIOOS, don't think we can link to the upstream CKAN
-        infoUrl = (
-            "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
-            + record["metadata"]["identifier"]
-        )
-        id = record["metadata"]["identifier"]
-        naming_authority = record["metadata"]["naming_autority"]
+    # TODO: reference the original cioos level? Not just national?
+    doi = record["identification"].get("identifier")
+    doi_url = doi if not doi or "doi.org" in doi else f"http://doi.org/{doi}"
+    metadata_link = (
+        "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
+        + record["metadata"]["identifier"],
+    )
 
-    # Get all organizations
-    organizations = []
+    # Contacts
+    # creator
+    creator_contact = [
+        contact for contact in record["contact"] if "owner" in contact["roles"]
+    ]
+    if not creator_contact:
+        raise Exception("No contact is associated with the role: owner")
+    # Consider the first publisher listed
+    creator_contact = creator_contact[0]
+    institution = creator_contact["organization"]["name"]
+    creator = {
+        "creator_name": _get_contact(creator_contact, "name"),
+        "creator_email": _get_contact(creator_contact, "email"),
+        "creator_url": _get_contact(creator_contact, "url"),
+        "creator_address": _get_contact(creator_contact, "address"),
+        "creator_city": _get_contact(creator_contact, "city"),
+        "creator_country": _get_contact(creator_contact, "country"),
+        "creator_ror": _get_contact(creator_contact, "ror"),
+        "creator_type": "person" if "individual" in creator_contact else "institution",
+        "creator_institution": creator_contact.get("organization", {}).get("name"),
+    }
 
-    for role in record["contact"]:
-        organization = role.get("organization", {}).get("name")
-        if organization:
-            organizations = list(set(organizations + [organization]))
+    # publisher
+    publisher_contact = [
+        contact for contact in record["contact"] if "distributor" in contact["roles"]
+    ]
+    if not publisher_contact:
+        raise Exception("No contact is associated with the role: distributor")
+    # Consider the first publisher listed
+    publisher_contact = publisher_contact[0]
+    publisher = {
+        "publisher_name": _get_contact(publisher_contact, "name"),
+        "publisher_email": _get_contact(publisher_contact, "email"),
+        "publisher_url": _get_contact(publisher_contact, "url"),
+        "publisher_address": _get_contact(publisher_contact, "address"),
+        "publisher_city": _get_contact(publisher_contact, "city"),
+        "publisher_country": _get_contact(publisher_contact, "country"),
+        "publisher_ror": _get_contact(publisher_contact, "ror"),
+        "publisher_type": "person"
+        if "individual" in publisher_contact
+        else "institution",
+        "publisher_institution": publisher_contact.get("organization", {}).get("name"),
+    }
+
+    # contributor
+    contributors = {
+        "contributor_name": ";".join(
+            [_get_contributors_name(contact) for contact in record["contact"]]
+        ),
+        "contributor_role": ";".join(
+            [",".join(contact["roles"]) for contact in record["contact"]]
+        ),
+    }
 
     # Get all instruments
     instruments = []
@@ -57,50 +107,19 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
                 if instrument["id"]:
                     instruments = list(set(instruments + [str(instrument["id"])]))
 
-    bbox = record["spatial"].get("bbox")
-
-    # get first publisher, ACDD seems to indicate this should be a single value
-    publisher = {}
-
-    creator = {}
-
-    contributor_names = []
-    contributor_roles = []
-    creator_type = ""
-    # publisher will be first 'publisher' or 'custodian' in contacts
-    for contact in record["contact"]:
-        if "publisher" in contact["roles"] or "custodian" in contact["roles"]:
-            publisher = contact
-            break
-
-    # contributors will be list of each person or organization
-    # with their first roles listed (in our system one person can have many roles)
-    # but 'contributor_name' in ACDD doesnt really let you do this
-    # 'custodian' is Metadata Contact, 'owner' is Data Contact
-
-    for contact in record["contact"]:
-        if not creator and "owner" in contact["roles"]:
-            if "individual" in contact:
-                creator = contact["individual"]
-                # ACDD says to use one of 'person', 'group', 'institution', or 'position'
-                creator_type = "person"
-            elif "organization" in contact:
-                creator = contact["organization"]
-                creator_type = "institution"
-
-        contributor_name = contact.get("individual", {}).get("name") or contact.get(
-            "organization", {}
-        ).get("name")
-
-        contributor_names.append(contributor_name)
-
-        # just getting the first role
-        contributor_roles.append(contact["roles"][0])
-
     platform_l06 = record.get("platform", {}).get("type")
+    bbox = record["spatial"]["bbox"]
 
     erddap_globals = {
-        "infoUrl": infoUrl,
+        "infoUrl": metadata_link,
+        "metadata_link": metadata_link,
+        "references": doi_url or metadata_link,
+        "doi": record["identification"].get("identifier"),
+        "id": doi or record["metadata"]["identifier"],
+        "naming_authority": "org.doi" if doi else record["metadata"]["naming_autority"],
+        **creator,
+        **publisher,
+        **contributors,
         #    "sourceUrl": "",  # from erddap
         "Conventions": "ACDD-1.3,CF-1.6",
         #    "acknowledgement": "",
@@ -109,14 +128,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         f"comment_{language_alt}": get_in_language(
             record["metadata"].get("comment"), language_alt
         ),
-        "contributor_name": ",".join(contributor_names or []),
-        "contributor_role": ",".join(contributor_roles or []),
         #    "coverage_content_type": "",
-        "creator_email": creator.get("email"),
-        "creator_institution": creator.get("organization", {}).get("name"),
-        "creator_name": creator.get("name"),
-        "creator_type": creator_type,
-        "creator_url": creator.get("url"),
         "date_created": record["identification"].get("dates", {}).get("creation"),
         "date_issued": record["metadata"].get("publication"),
         #   "date_metadata_modified": "",
@@ -134,9 +146,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "geospatial_vertical_resolution": "",
         #    "geospatial_vertical_units": "",
         "history": record["metadata"].get("history"),
-        "id": id,
-        "naming_authority": naming_authority,
-        "institution": ",".join(organizations or []),
+        "institution": institution,
         "instrument": ",".join(instruments or []),
         #    "instrument_vocabulary": "",
         "keywords": ",".join(
@@ -168,9 +178,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
             record["metadata"].get("use_constraints", {}).get("limitations"),
             language_alt,
         ),
-        "doi": record["identification"].get("identifier"),
-        "metadata_link": "https://catalogue.cioos.ca/en/dataset/ca-cioos_"
-        + record["metadata"]["identifier"],
         "platform": platform_l06,
         "platform_vocabulary": platform_l06
         and "http://vocab.nerc.ac.uk/collection/L06/current/",
@@ -179,13 +186,6 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "program": "",
         "project": record["identification"].get("project")
         and ",".join(record["identification"].get("project")),
-        "publisher_email": publisher.get("organization", {}).get("email")
-        or publisher.get("individual", {}).get("email"),
-        "publisher_institution": publisher.get("organization", {}).get("name"),
-        "publisher_name": publisher.get("individual", {}).get("name")
-        or publisher.get("organization", {}).get("name"),
-        #    "publisher_type": "",
-        "publisher_url": publisher.get("organization", {}).get("url"),
         #    "references": "",
         #    "source": "",
         #    "standard_name_vocabulary": "",
