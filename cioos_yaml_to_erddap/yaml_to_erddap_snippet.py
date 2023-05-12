@@ -175,7 +175,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "platform_vocabulary": platform_l06
         and "http://vocab.nerc.ac.uk/collection/L06/current/",
         #    "processing_level": "",
-        #    "product_version": "",
+        "product_version": record["identification"].get("edition"),
         #    "program": "",
         "project": record["identification"].get("project"),
         "publisher_email": publisher.get("organization", {}).get("email")
