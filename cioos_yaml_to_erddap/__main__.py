@@ -13,7 +13,7 @@ import argparse
 
 import yaml
 
-from .yaml_to_erddap_snippet import create_xml_snippet
+from cioos_yaml_to_erddap.yaml_to_erddap_snippet import create_xml_snippet
 
 
 def cioos_yaml_to_erddap(filename):

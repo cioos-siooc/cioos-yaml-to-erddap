@@ -8,8 +8,8 @@ Main function of this module, creates ACDD key/value from the appropriate values
 
 from typing import Dict
 
-from .licenses import license_urls
-from .utils import get_in_language, get_xml_filename
+from cioos_yaml_to_erddap.licenses import license_urls
+from cioos_yaml_to_erddap.utils import get_in_language, get_xml_filename
 
 
 def yaml_to_erddap_dict(record: Dict) -> Dict:
