@@ -171,11 +171,9 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "keywords_vocabulary": "GOOS: Global Ocean Observing System essential ocean variables",
         "doi": record["identification"].get("identifier"),
         #    "metadata_link": "",
-        #    "naming_authority": "",
         "platform": platform_l06,
         "platform_vocabulary": platform_l06
         and "http://vocab.nerc.ac.uk/collection/L06/current/",
-        #    "platform_vocabulary": "",
         #    "processing_level": "",
         #    "product_version": "",
         #    "program": "",
