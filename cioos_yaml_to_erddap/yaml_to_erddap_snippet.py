@@ -177,7 +177,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         #    "processing_level": "",
         #    "product_version": "",
         #    "program": "",
-        #    "project": "",
+        "project": record["identification"].get("project"),
         "publisher_email": publisher.get("organization", {}).get("email")
         or publisher.get("individual", {}).get("email"),
         "publisher_institution": publisher.get("organization", {}).get("name"),
