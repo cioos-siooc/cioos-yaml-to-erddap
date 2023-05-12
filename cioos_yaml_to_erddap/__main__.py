@@ -34,7 +34,7 @@ def main():
     filename = args.yaml_file
 
     # write xml snippet
-    with open(filename) as stream:
+    with open(filename, encoding="utf-8") as stream:
         record = yaml.safe_load(stream)
         xml = create_xml_snippet(record)
         print(xml)
