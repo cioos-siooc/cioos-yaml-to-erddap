@@ -140,8 +140,8 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
         "keywords": ",".join(
             list(
                 set(
-                    record["identification"]["keywords"]["default"]["en"]
-                    + record["identification"]["keywords"]["eov"]["en"]
+                    record["identification"]["keywords"]["default"][language]
+                    + record["identification"]["keywords"]["eov"][language]
                 )
             )
         ),
