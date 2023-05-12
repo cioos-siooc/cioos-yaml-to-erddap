@@ -102,7 +102,7 @@ def yaml_to_erddap_dict(record: Dict) -> Dict:
     erddap_globals = {
         "infoUrl": infoUrl,
         #    "sourceUrl": "",  # from erddap
-        #    "Conventions": "",
+        "Conventions": "ACDD-1.3,CF-1.6",
         #    "acknowledgement": "",
         #    "cdm_data_type": "",
         "comment": get_in_language(record["metadata"].get("comment"), language),
